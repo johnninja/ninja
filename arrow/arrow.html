@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="arrow.js"></script>
+	<script type="text/javascript" src="../utils.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="400" height="400" style="border:solid 1px #ccc"></canvas>
+<script type="text/javascript">
+	var canvas=document.getElementById('canvas');
+	var context=canvas.getContext('2d');
+
+	var arrow=new Arrow();
+	arrow.x=canvas.width/2;
+	arrow.y=canvas.height/2;
+	var mouse=utils.captureMouse(canvas);
+	(function drawFrame () {
+		window.requestAnimationFrame(drawFrame);
+		context.clearRect(0,0,canvas.width,canvas.height);
+		
+		var dx=mouse.x-arrow.x,
+			dy=mouse.y-arrow.y;
+		arrow.rotation=Math.atan2(dy,dx);
+	 	arrow.draw(context);
+	}());
+</script>
+</body>
+</html>
