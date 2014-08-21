@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>particle text</title>
+	<style>
+	#canvas{
+		background: #fff;
+		border:1px solid #000;
+	}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="400" height="400"></canvas>
+	<img src="text.jpg" id="img" alt="" />
+	<script>
+		var requestAnimationFrame=window.requestAnimationFrame
+			||window.webkitRequestAnimationFrame
+			||window.mozRequestAnimationFrame
+			||window.msRequestAnimationFrame
+			||window.oRequestAnimationFrame,
+			canvas = document.getElementById('canvas'),
+			cxt = canvas.getContext('2d'),
+			pause = false,
+			img = document.getElementById('img');
+
+		function Particle(centerX,centerY,centerZ,radius){
+			
+			//原来位置
+			this.sx=centerX;
+			this.sy=centerY;
+			this.sz=centerZ;
+			//飞散后位置
+			this.tx=Math.random()*canvas.width;
+			this.ty=Math.random()*canvas.height;
+			this.tz=0;
+			//当前位置
+			this.x=Math.round(this.tx);
+			this.y=Math.round(this.ty);
+			this.z=centerZ;
+
+			this.radius=radius;
+			this.deltx=(this.tx-this.sx)*0.05;
+			this.delty=(this.ty-this.sy)*0.05;
+			//this.ratio=Math.abs(this.delty/this.deltx);
+			this.dis=Math.abs(Math.sqrt((this.x-this.sx)*(this.x-this.sx)+(this.y-this.sy)*(this.y-this.sy)));
+
+		}
+
+		Particle.prototype.paint=function(){
+			
+			cxt.fillStyle="rgba(168,168,168,1)";
+			cxt.beginPath();
+			cxt.arc(this.x,this.y,this.radius,0,Math.PI*2,false);
+			cxt.scale(this.centerZ,this.centerZ);
+			cxt.closePath();
+			cxt.fill();
+			
+		}
+
+		//画字
+		function drawText(text){
+			cxt.save();
+            cxt.font = "200px 微软雅黑 bold";
+            cxt.fillStyle = "rgba(168,168,168,1)";
+            cxt.textAlign = "center";
+            cxt.textBaseline = "middle";
+            cxt.fillText(text , canvas.width/2 , canvas.height/2);
+            cxt.restore();
+		}
+		//获取位置
+		cxt.drawImage(img,0,0,img.width,img.height);
+		function getPos(){
+			//drawText('测试');
+			
+			var imgData=cxt.getImageData(0,0,canvas.width,canvas.height);
+			//cxt.clearRect(0,0,canvas.width,canvas.height);
+			var dots=[];
+			
+			for (var x = 0; x < imgData.width; x+=10) {
+				for (var y = 0; y < imgData.height; y+=10) {
+					var i=(y*imgData.width+x)*4;
+					console.log(imgData.data[i]);
+					
+					if (imgData.data[i]>=128) {
+						alert('a');
+						var p = new Particle(x-3,y-3,0,5);
+						dots.push(p);
+
+					};
+				};
+			};
+			return dots;
+		}
+		dots=getPos();
+		
+		Array.prototype.foreach=function(callBack){
+			for (var i = 0; i < this.length; i++) {
+				callBack.call(this[i]);
+			};
+		}
+	
+		function drawFrame(){
+			cxt.clearRect(0,0,canvas.width,canvas.height);
+			dots.foreach(function(){
+				// if (Math.abs(this.x-this.sx)<0.1) {
+				// 	pause=false;
+				// }else{
+				// 	pause=true;
+				// 	this.x=this.sx;
+				// 	this.y=this.sy;
+				// }
+				this.x-=this.deltx;
+				this.y-=this.delty;
+				// if (this.deltx>0) {
+				// 	this.x-=this.deltx;
+				// }else{
+				// 	this.x+=this.deltx;
+				// }
+
+				// if (this.delty>0) {
+				// 	this.y-=this.delty;
+				// }else{
+				// 	this.y+=this.delty;
+				// }
+				
+				if (Math.abs(this.x-this.sx)<0.1&&Math.abs(this.y-this.sy)<0.1) {
+					
+					this.x=this.sx;
+					this.y=this.sy;
+					clearInterval(timer);
+				}
+				
+				// if (this.dis<=10) {
+				// 	console.log(this.x,this.sx);
+				// 	this.x=this.sx;
+				// 	this.y=this.sy;
+				// };
+				this.paint();
+				
+			});
+			
+		}
+		//var timer = setInterval(drawFrame,30);
+		
+	</script>
+</body>
+</html>

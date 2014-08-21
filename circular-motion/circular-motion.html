@@ -1,8 +1,7 @@
-<!DOCTYPE html>
 <html>
 <head>
 	<title></title>
-	<script type="text/javascript" src="wave.js"></script>
+	<script type="text/javascript" src="circular-motion.js"></script>
 	<script type="text/javascript" src="../utils.js"></script>
 </head>
 <body>
@@ -10,19 +9,22 @@
 <script type="text/javascript">
 	var canvas=document.getElementById('canvas');
 	var context=canvas.getContext('2d');
-	var wave=new Wave();
-	var angle=0;
-	wave.x=canvas.width/2;
-	wave.y=canvas.height/2;
+	var ball=new Ball(),
+		centerX=canvas.width/2,
+		centerY=canvas.height/2,
+		range=50,
+		angle=0,
+		speed=0.05;
 
 	(function drawFrame() {
 		// body...
 		window.requestAnimationFrame(drawFrame);
 		context.clearRect(0,0,canvas.width,canvas.height);
-		wave.y=canvas.height/2+Math.sin(angle)*50;
-		angle+=0.1;
-		wave.draw(context);
-	}())
+		ball.x=centerX+Math.cos(angle)*range;
+		ball.y=centerY+Math.sin(angle)*range;
+		angle+=speed;
+		ball.draw(context);
+	}());
 </script>
 </body>
 </html>

@@ -1,8 +1,7 @@
-<!DOCTYPE html>
 <html>
 <head>
 	<title></title>
-	<script type="text/javascript" src="wave.js"></script>
+	<script type="text/javascript" src="angle-wave.js"></script>
 	<script type="text/javascript" src="../utils.js"></script>
 </head>
 <body>
@@ -10,19 +9,25 @@
 <script type="text/javascript">
 	var canvas=document.getElementById('canvas');
 	var context=canvas.getContext('2d');
-	var wave=new Wave();
-	var angle=0;
-	wave.x=canvas.width/2;
-	wave.y=canvas.height/2;
+	var linear=new Linear(),
+		angleX=0,
+		angleY=0,
+		range=50,
+		centerX=canvas.width/2,
+		centerY=canvas.height/2,
+		xspeed=0.07,
+		yspeed=0.11;
 
 	(function drawFrame() {
 		// body...
 		window.requestAnimationFrame(drawFrame);
 		context.clearRect(0,0,canvas.width,canvas.height);
-		wave.y=canvas.height/2+Math.sin(angle)*50;
-		angle+=0.1;
-		wave.draw(context);
-	}())
+		linear.x=centerX+Math.sin(angleX)*range;
+		linear.y=centerY+Math.sin(angleY)*range;
+		angleX+=xspeed;
+		angleY+=yspeed;
+		linear.draw(context);
+	}());
 </script>
 </body>
 </html>
